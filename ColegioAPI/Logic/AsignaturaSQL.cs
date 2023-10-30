@@ -77,11 +77,13 @@ namespace ColegioAPI.Logic
             return null;
         }
 
-        public static void CrearAsignatura(Asignatura asignatura)
+        public static int CrearAsignatura(Asignatura asignatura)
         {
             var connectionString = Utils.ConexionSQL();
 
             var query = $"insert into asignatura (id, nombre) values(@id, @nombre)";
+            int resultado = 0;
+
 
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
@@ -90,19 +92,22 @@ namespace ColegioAPI.Logic
                 {
                     command.Parameters.AddWithValue("@id", asignatura.id);
                     command.Parameters.AddWithValue("@nombre", asignatura.nombre);
-                    command.ExecuteNonQuery();
+                    resultado = command.ExecuteNonQuery();
 
                 }
 
             }
+            return resultado;
 
         }
 
-        public static void ActualizarAsignatura(Asignatura asignatura, string id)
+        public static int ActualizarAsignatura(Asignatura asignatura, string id)
         {
             var connectionString = Utils.ConexionSQL();
 
             var query = $"update asignatura set nombre = @nombre where id = @id";
+            int resultado = 0;
+
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
@@ -110,17 +115,19 @@ namespace ColegioAPI.Logic
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@nombre", asignatura.nombre);
-                    command.ExecuteNonQuery();
+                    resultado = command.ExecuteNonQuery();
                 }
             }
-
+            return resultado;
         }
 
-        public static void EliminarAsignatura(string id)
+        public static int EliminarAsignatura(string id)
         {
             var connectionString = Utils.ConexionSQL();
 
-            var query = "delete from asignatura where id=i@d";
+            var query = "delete from asignatura where id=@id";
+            int resultado = 0;
+
 
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
@@ -128,11 +135,11 @@ namespace ColegioAPI.Logic
                 using (SqlCommand command = new SqlCommand(query, sqlConnection))
                 {
                     command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
+                    resultado = command.ExecuteNonQuery();
 
                 }
             }
-
+            return resultado;
         }
     }
 }

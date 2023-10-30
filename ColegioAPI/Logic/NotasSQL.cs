@@ -5,12 +5,12 @@ namespace ColegioAPI.Logic
 {
     public class NotasSQL
     {
-        public static void CrearNotas(Notas notas)
+        public static int CrearNotas(Notas notas)
         {
             var connectionString = Utils.ConexionSQL();
             
             var query = $"insert into notas (id, nota, alumnoid, asignaturaid) values(@id, @nota, @alumnoid, @asignaturaid)";
-
+            var resultado = 0;
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
@@ -20,9 +20,10 @@ namespace ColegioAPI.Logic
                     command.Parameters.AddWithValue("@nota", notas.nota);
                     command.Parameters.AddWithValue("@alumnoid", notas.alumnoid);
                     command.Parameters.AddWithValue("@asignaturaid", notas.asignaturaid);
-                    command.ExecuteNonQuery();
+                    resultado = command.ExecuteNonQuery();
 
                 }
+                return resultado;
             }
         }
         public static List<Notas> ObtenerNotasporAlumno(string idalumno)
@@ -53,7 +54,7 @@ namespace ColegioAPI.Logic
                         {
                             #region Notas
                             Guid id = (Guid)reader["id"];
-                            double nota = Convert.ToDouble(reader["nota"]);
+                            decimal nota = Convert.ToDecimal(reader["nota"]);
                             Guid alumnoid = (Guid)reader["alumnoid"];
                             Guid asignaturaid = (Guid)reader["asignaturaid"];
                             #endregion
@@ -112,9 +113,7 @@ namespace ColegioAPI.Logic
                         }
                     }
                 }
-
             }
-
             return notas;
         }
 
@@ -188,7 +187,7 @@ namespace ColegioAPI.Logic
 
                             #region Notas
                             Guid id = (Guid)reader["id"];
-                            double nota = Convert.ToDouble(reader["nota"]);
+                            decimal nota = Convert.ToDecimal(reader["nota"]);
                             Guid alumnoid = (Guid)reader["alumnoid"];
                             Guid asignaturaid = (Guid)reader["asignaturaid"];  
                             Notas notaN = new Notas
@@ -207,16 +206,30 @@ namespace ColegioAPI.Logic
                         }
                     }
                 }
-
             }
-
             return notas;
         }
 
 
+        public static int EliminarNota(string id)
+        {
+            var connectionString = Utils.ConexionSQL();
 
+            var query = "delete from notas where id=@id";
+            int resultado = 0;
 
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand command = new SqlCommand(query, sqlConnection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    resultado = command.ExecuteNonQuery();
 
-
+                }
+            }
+            return resultado;
+        }
     }
+
 }

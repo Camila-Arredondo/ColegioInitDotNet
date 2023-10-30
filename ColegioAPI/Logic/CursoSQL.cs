@@ -81,11 +81,12 @@ namespace ColegioAPI.Logic
             return null;
         }
 
-        public static void CrearCurso(Curso curso)
+        public static int CrearCurso(Curso curso)
         {
             var connectionString = Utils.ConexionSQL();
 
             var query = $"insert into curso (id, nivel, letra) values(@id, @nivel, @letra)";
+            int resultado = 0;
 
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
@@ -95,17 +96,18 @@ namespace ColegioAPI.Logic
                     command.Parameters.AddWithValue("@id", curso.id);
                     command.Parameters.AddWithValue("@nivel", curso.nivel);
                     command.Parameters.AddWithValue("@letra", curso.letra);
-                    command.ExecuteNonQuery();
+                    resultado = command.ExecuteNonQuery();
 
                 }
 
             }
-
+            return resultado;
         }
 
-        public static void ActualizarCurso(Curso curso, string id)
+        public static int ActualizarCurso(Curso curso, string id)
         {
             var connectionString = Utils.ConexionSQL();
+            int resultado = 0;
 
             var query = $"update curso set nivel = @nivel, letra = @letra where id = @id";
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -116,17 +118,18 @@ namespace ColegioAPI.Logic
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@nivel", curso.nivel);
                     command.Parameters.AddWithValue("@letra", curso.letra);
-                    command.ExecuteNonQuery();
+                    resultado = command.ExecuteNonQuery();
                 }
             }
-
+            return resultado;
         }
 
-        public static void EliminarCurso(string id)
+        public static int EliminarCurso(string id)
         {
             var connectionString = Utils.ConexionSQL();
 
-            var query = "delete from curso where id=i@d";
+            var query = "delete from curso where id=@id";
+            int resultado = 0;
 
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
@@ -134,11 +137,11 @@ namespace ColegioAPI.Logic
                 using (SqlCommand command = new SqlCommand(query, sqlConnection))
                 {
                     command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
+                    resultado=command.ExecuteNonQuery();
 
                 }
             }
-
+            return resultado;
         }
 
     }
